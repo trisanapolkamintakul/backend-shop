@@ -11,8 +11,17 @@ server.route([
         handler: (request: Request, h: ResponseToolkit) => {
 return "Hello World";
         }
+    },
+    {
+        method: ['PUT', 'POST'],
+    path: '/g',
+    handler: (request: Request, h: ResponseToolkit) => {
+
+        return "I did something!";
     }
+}
 ]);
+
 
 server.start().then(
     () => {console.log("Server start"); },
