@@ -13,11 +13,11 @@ return "Hello World";
         }
     },
     {
-        method: ['PUT', 'POST'],
-    path: '/g',
+        method:  "GET",
+    path: '/hi',
     handler: (request: Request, h: ResponseToolkit) => {
 
-        return "I did something!";
+        return "I work hard";
     }
 }
 ]);
