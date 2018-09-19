@@ -1,6 +1,8 @@
 import { Server, ResponseToolkit, Request } from "hapi";
 import { ProductPlugin } from './product/index';
-
+import { plugin } from "hapi-auth-basic";
+import { request } from "https";
+// import { validate, assert } from "joi";
 const server = new Server({
     port: "5000"
 });
@@ -14,15 +16,46 @@ const server = new Server({
 // });
 
 async function init() {
-    try {
-        await server.register(new ProductPlugin(), { routes: { prefix: "/product" } });
-        await server.start();
-        console.log("Server start");
-    } catch (err) {
-        console.log("Sever Error");
-    }
+
+
+    await server.register(plugin);
+    server.auth.strategy('simple', 'basic', { validate });
+    server.route([
+        {
+            method: "GET",
+            path: '/',
+            handler: (request: Request, h: ResponseToolkit) => {
+
+                return "Hello"
+            },
+            options: {
+                auth: 'simple'
+            }
+        }
+    ])
+    await server.register(new ProductPlugin(), { routes: { prefix: "/product" } });
+    await server.start();
+    console.log("sever start");
 }
-init();
+const validate = async (request, username, password) => {
+    let isValid = false;
+    let credentials = {}
+    if (username == "flash" && password == "1234") {
+        isValid = true;
+        credentials = { userId: "U1234", name: "Trisanapol" }
+    }
+    return { isValid, credentials }
+};
+
+
+
+
+try {
+    init();
+}
+catch (err) {
+    console.log("server error" + err);
+}
 //ให้ "await ประกาศแล้วใช้ asysc" เพื่อใช้รันแทน .then
 //ประกาศFunction แล้วต้องเรียกใช้ Functionด้วย
 //Ex.fuuction init()
